@@ -1,0 +1,45 @@
+# this was just a demo for applying keras Feed NN to mnist
+
+import tensorflow as tf
+mnist = tf.keras.datasets.mnist  # built dataset in mnist
+# or we can say "Hello World" in Deep learning
+(x_train, y_train),(x_test, y_test) = mnist.load_data()
+# print(x_train[0])
+
+# now we will normalize our data ie range is from 0 to 1
+# our pixel data is now 0 to 255 range we will change that it is good for our model
+x_train = tf.keras.utils.normalize(x_train, axis=1)
+x_test = tf.keras.utils.normalize(x_test, axis=1)
+# print(x_train[0])
+
+# this model is basic/default or Feed NN
+model = tf.keras.models.Sequential()
+
+# data should be flatten so as to our NN will work on it
+# its 28*28 now we will make it 1*784
+# there is a flatten layer built just for us
+model.add(tf.keras.layers.Flatten())
+# .add can be used to add layers to our network
+# here we added our input layer
+
+# we will add a hidden layer now
+model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+# 128 signifies no. of nodes in HL1, and we provide an activation function too
+
+model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+# HL2
+
+# now this will be our output layer
+model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
+# 10 signifies our total labels
+# softmax fits more suitable for our data in output layer
+
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+# adam is a good default
+# loss is the calculation of errors, NN always tries to minimize loss not maximize accuracy
+model.fit(x_train, y_train, epochs=3)
+val_loss, val_acc = model.evaluate(x_test, y_test)
+# print(val_loss)
+# print(val_acc)
